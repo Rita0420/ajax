@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #f0f8ff, #e0f7fa);
+      margin: 0;
+      padding: 30px;
+    }
+
+    h3 {
+      text-align: center;
+      color: #0077b6;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    form {
+      max-width: 600px;
+      margin: auto;
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    form div {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #00b4d8;
+      outline: none;
+    }
+
+    .form-buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .form-buttons button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #00b4d8;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-buttons button:hover {
+      background-color: #0077b6;
+    }
+  </style>
+  <script src="./jquery.js"></script>
+</head>
+<body>
+    <h3>新增學生</h3>
+    <form method="post" >
+        <div>
+        <label for="uni_id">學號</label>
+        </div>
+        <div>
+        <input type="text" name="uni_id" id="uni_id">
+        </div>
+
+        <div>
+        <label for="name">姓名</label>
+        </div>
+        <div>
+        <input type="text" name="name" id="name">
+        </div>
+
+         <div>
+        <label for="national_id">身分證字號</label>
+        </div>
+        <div>
+        <input type="text" name="national_id" id="national_id">
+        </div>
+
+        <div>
+        <label for="birthday">生日</label>
+        </div>
+        <div>
+        <input type="date" name="birthday" id="birthday">
+        </div>
+
+         <div>
+        <label for="classroom">班級</label>
+        </div>
+        <div>
+        <input type="text" name="classroom" id="classroom">
+        </div>
+
+         <div>
+        <label for="seat_num">座號</label>
+        </div>
+        <div>
+        <input type="text" name="seat_num" id="seat_num">
+        </div>
+
+         <div>
+        <label for="major">主修科目</label>
+        </div>
+        <div>
+        <input type="text" name="major" id="major">
+        </div>
+
+        <div>
+        <label for="secondary">畢業國中</label>
+        </div>
+        <div>
+        <input type="text" name="secondary" id="secondary">
+        </div>
+
+        <div>
+        <label for="parent">家長姓名</label>
+        </div>
+        <div>
+        <input type="text" name="parent" id="parent">
+        </div>
+
+        <div>
+        <label for="address">地址</label>
+        </div>
+        <div>
+        <input type="text" name="address" id="address">
+        </div>
+
+        <div>
+        <label for="telphone">電話</label>
+        </div>
+        <div>
+        <input type="text" name="telphone" id="telphone">
+        </div>
+
+        <div class="form-buttons">
+            <button type="button" onclick="add()">送出</button>
+        </div>
+    </form>
+
+<script>
+function add(){
+    let data= {
+        uni_id : $('#uni_id').val(),
+        name : $('#name').val(),
+        national_id : $('#national_id').val(),
+        birthday : $('#birthday').val(),
+        classroom : $('#classroom').val(),
+        seat_num : $('#seat_num').val(),
+        major : $('#major').val(),
+        secondary : $('#secondary').val(),
+        parent : $('#parent').val(),
+        address : $('#address').val(),
+        telphone : $('#telphone').val(),    
+    }
+
+    $.post("./api/save_student.php",data,function(res){
+        if(res.success){
+            alert("新增成功");
+            location.href="index.html";
+        }else{
+            alert("新增失敗" + res.message);
+        }
+    })
+}
+</script>
+</body>
+</html>

@@ -1,50 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>學生資料管理系統</title>
-    <link rel="shortcut icon" href="#" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
-    <!---匯入要使用的函式庫--->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>學生資料管理系統</title>
+  <link rel="shortcut icon" href="#" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+  <!---匯入要使用的函式庫--->
+  <script src="jquery.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #f0f8ff, #e6f7ff);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+      color: #0077b6;
+      letter-spacing: 2px;
+    }
+
+    .class-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      gap: 10px;
+    }
+
+    .class-nav button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      background-color: #00b4d8;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .class-nav button:hover {
+      background-color: #0077b6;
+      transform: translateY(-2px);
+    }
+
+    .class-nav button.active{
+      background-color: #0077b6;
+    }
+
+    .add-student{
+      width: 20vw;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      background-color: #00b4d8;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .students {
+      display: flex;
+      justify-content: center;
+    }
+
+    table {
+      width: 90%;
+      max-width: 1100px;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    thead {
+      background-color: #0077b6;
+      color: white;
+    }
+
+    th,
+    td {
+      padding: 12px 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f9ff;
+    }
+
+    button {
+      background-color: #48cae4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      margin: 2px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0096c7;
+    }
+  </style>
 
 
 </head>
+
 <body>
   <h1 class="header">學生資料管理系統</h1>
+  <div class="class-nav"></div>
+  <div class="add-student" onclick="location.href='./add_student.html'">新增學生</div>
+  <br>
+  <div class="students">
+    <table>
+      <thead>
+        <tr>
+          <th>學號</th>
+          <th>班級</th>
+          <th>座號</th>
+          <th>姓名</th>
+          <th>生日</th>
+          <th>地址</th>
+          <th>電話</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
 
-  
+      </tbody>
+    </table>
+  </div>
+
 </body>
+
 </html>
 <script>
-/************************************
-* 1.考慮觸發行為的事件
-* 2.建立監聽行為
-* 3.考慮是否需要代入參數
-* 4.是否會有回傳值？回傳值的功用及處理？
-* 5.是否需要更新畫面內容？更新畫面的方法？
-************************************/
+  /************************************
+  * 1.考慮觸發行為的事件
+  * 2.建立監聽行為
+  * 3.考慮是否需要代入參數
+  * 4.是否會有回傳值？回傳值的功用及處理？
+  * 5.是否需要更新畫面內容？更新畫面的方法？
+  ************************************/
+  //取得所有班級資料
+  getClassrooms();
+  function getClassrooms() {
+    $.get("./api/classroom.php", function (classrooms) {
+      // console.log(classrooms);
+      $('.class-nav').html('');
+      classrooms.forEach(item => {
+        $('.class-nav').append(`<button data-classroom='${item.classroom}'>${item.name}</button>`);
+      })
+
+      $('.class-nav button').on('click', function () {
+
+        let classroom = $(this).data('classroom');
+        getClassStudents(classroom);
+        $('.class-nav button').removeClass('active');
+        $(this).addClass('active');
+      })
+    })
+  }
+
+  getClassStudents('101');//這樣一載入頁面就有資料
+
+  //取得班級資料的函式
+  function getClassStudents(classroom) {
+    $('.students tbody').html('');//每次執行都會重置
+    //執行這個函式時會代入classroom
+    $.get(`./api/get_students.php`, { classroom }, function (data) {
+      console.log(data);
+      data.forEach(student => {
+
+        $('.students tbody').append(
+          `
+        <tr>
+          <td>${student.uni_id}</td>
+          <td>${student.classname}</td>
+          <td>${student.seat_num}</td>
+          <td>${student.name}</td>
+          <td>${student.birthday}</td>
+          <td>${student.address}</td>
+          <td>${student.telphone}</td>
+          <td>
+            <button data-id="${student.id}" onclick="location.href='./edit_student.html?id=${student.id}'">編輯</button>  
+            <button class="del-btn" onclick="del(${student.id})">刪除</button>  
+          </td>
+        </tr>
+        `
+        )
+      })
+
+    })
+  }
 
 
-//新增資料的函式
-function create(){
+  //新增資料的函式
+  function create() {
 
-}
+  }
 
-//查詢資料的函式
-function query(){
+  //查詢資料的函式
+  function query() {
 
-}
+  }
 
-//編輯資料的函式
-function update(){
+  //編輯資料的函式
+  function update() {
 
-}
+  }
 
-//刪除資料的函式
-function del(){
-
-}
+  //刪除資料的函式
+  function del(id) {
+    if(confirm("確定要刪除這筆資料嗎?")){
+      $.post("./api/del_student.php",{id},function(res){
+        if(res.success){
+          alert("刪除成功");
+          // location.reload();//刷新頁面
+          getClassStudents($('.class-nav button.active').data('classroom'));
+        }else{
+          alert("刪除失敗");
+        }
+      }
+    )}
+  }
 
 </script>
