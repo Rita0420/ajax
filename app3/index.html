@@ -1,30 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJAX & Modal</title>
-    <link rel="shortcut icon" href="#" type="image/x-icon">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>學生資料管理系統</title>
+  <link rel="shortcut icon" href="#" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+  <!---匯入要使用的函式庫--->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+  <script src="jquery.js"></script>
 </head>
+
 <body>
-    <h1 class='text-center p-2 m-2'>使用AJAX技術來整合Modal及表單</h1>
-    
+  <h1 class="header">學生資料管理系統</h1>
+  <div class="class-nav"></div>
+  <div class="add-student" type="button">新增學生</div>
+  <br>
+  <div class="students">
+    <table>
+      <thead>
+        <tr>
+          <th>學號</th>
+          <th>班級</th>
+          <th>座號</th>
+          <th>姓名</th>
+          <th>生日</th>
+          <th>地址</th>
+          <th>電話</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
 
+      </tbody>
+    </table>
+  </div>
+  <div class="mymodal">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>    
+  </div>
+
 </body>
+
 </html>
 <script>
-/**
- * 1.使用ajax技術來達到不用跳頁也能傳送表單資料
- * 2.使用ajax技術來更新modal中的資料
-*/
+  $('.add-student').on('click', function () {
+    $.get('./add_student.php', function (modal) {
+      $('.mymodal').html(modal)
+      const studentModal = new bootstrap.Modal('#studentModal')
+      studentModal.show();
+    })
+  })
+
+  /************************************
+  * 1.考慮觸發行為的事件
+  * 2.建立監聽行為
+  * 3.考慮是否需要代入參數
+  * 4.是否會有回傳值？回傳值的功用及處理？
+  * 5.是否需要更新畫面內容？更新畫面的方法？
+  ************************************/
+  //取得所有班級資料
+  getClassrooms();
+  function getClassrooms() {
+    $.get("./api/classroom.php", function (classrooms) {
+      // console.log(classrooms);
+      $('.class-nav').html('');
+      classrooms.forEach(item => {
+        $('.class-nav').append(`<button data-classroom='${item.classroom}'>${item.name}</button>`);
+      })
+
+      $('.class-nav button').on('click', function () {
+
+        let classroom = $(this).data('classroom');
+        getClassStudents(classroom);
+        $('.class-nav button').removeClass('active');
+        $(this).addClass('active');
+      })
+    })
+  }
+
+  getClassStudents('101');//這樣一載入頁面就有資料
+
+  //取得班級資料的函式
+  function getClassStudents(classroom) {
+    $('.students tbody').html('');//每次執行都會重置
+    //執行這個函式時會代入classroom
+    $.get(`./api/get_students.php`, { classroom }, function (data) {
+      console.log(data);
+      data.forEach(student => {
+
+        $('.students tbody').append(
+          `
+        <tr>
+          <td>${student.uni_id}</td>
+          <td>${student.classname}</td>
+          <td>${student.seat_num}</td>
+          <td>${student.name}</td>
+          <td>${student.birthday}</td>
+          <td>${student.address}</td>
+          <td>${student.telphone}</td>
+          <td>
+            <button data-id="${student.id}" class='edit-btn'>編輯</button>  
+            <button class="del-btn" onclick="del(${student.id})">刪除</button>  
+          </td>
+        </tr>
+        `
+        )
+
+      })
+
+      $('.edit-btn').on('click',function(){
+        $.get('./edit_student.php',{id:$(this).data('id')},(modal)=>{
+          $('.mymodal').html(modal)
+          getStudent($(this).data('id'));
+          const modalEI=document.getElementById('studentModal');
+          const studentModal=new bootstrap.Modal(modalEI);
+          $('#studentModal').on('hidden.bs.modal',function(){
+            studentModal.dispose();
+            $('.mymodal').empty();
+          })
+          studentModal.show();
+        })
+      })
+    })
+  }
 
 
+  //新增資料的函式
+  function create() {
 
+  }
+
+  //查詢資料的函式
+  function query() {
+
+  }
+
+  //編輯資料的函式
+  function update() {
+
+  }
+
+  //刪除資料的函式
+  function del(id) {
+    if (confirm("確定要刪除這筆資料嗎?")) {
+      $.post("./api/del_student.php", { id }, function (res) {
+        if (res.success) {
+          alert("刪除成功");
+          // location.reload();//刷新頁面
+          getClassStudents($('.class-nav button.active').data('classroom'));
+        } else {
+          alert("刪除失敗");
+        }
+      }
+      )
+    }
+  }
 
 </script>

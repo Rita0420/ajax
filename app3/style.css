@@ -1,16 +1,143 @@
-*{
-    font-family: "微軟正黑體",Arial, Helvetica, sans-serif;
-    font-size:16px;
-    padding:0;
-    margin:0;
-    list-style-type: none;
-    box-sizing: border-box;
-    text-decoration: none;
-}
+ body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #f0f8ff, #e6f7ff);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
 
-.header{
-    margin:10px auto;
-    padding:10px;
-    text-align: center;
-    font-size:32px;
-}
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+      color: #0077b6;
+      letter-spacing: 2px;
+    }
+
+    .class-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      gap: 10px;
+    }
+
+    .class-nav button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      background-color: #00b4d8;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .class-nav button:hover {
+      background-color: #0077b6;
+      transform: translateY(-2px);
+    }
+
+    .class-nav button.active {
+      background-color: #0077b6;
+    }
+
+    .add-student {
+      width: 10vw;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      background-color: #00b4d8;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .students {
+      display: flex;
+      justify-content: center;
+    }
+
+    table {
+      width: 90%;
+      max-width: 1100px;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    thead {
+      background-color: #0077b6;
+      color: white;
+    }
+
+    th,
+    td {
+      padding: 12px 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f9ff;
+    }
+
+    button {
+      background-color: #48cae4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      margin: 2px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0096c7;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #00b4d8;
+      outline: none;
+    }
+
+    .form-buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .form-buttons button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #00b4d8;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-buttons button:hover {
+      background-color: #0077b6;
+    }
